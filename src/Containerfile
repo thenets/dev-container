@@ -1,36 +1,10 @@
-FROM docker.io/fedora:latest
+FROM registry.fedoraproject.org/fedora:latest
 
-RUN set -x \
-	# OS upgrade
-	&& dnf upgrade -y \
-	# Repos
-	&& dnf install -y dnf-plugins-core \
-	&& dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo \
-	# Groups
-	&& dnf groupinstall -y "Development Tools" "Development Libraries" \
-	# OS packages
-	&& dnf install -y \
-		sudo make htop procps-ng net-tools iputils iproute bind9-next-utils hostname \
-		terraform \
-		python3-pip \
-		curl wget \
-		git make \
-		golang \
-		vim nano \
-		rust cargo \
-		ansible \
-		podman \
-	# Python packages
-	&& pip install \
-		ansible-navigator \
-		ansible-creator \
-		ansible-lint
+# Install OS packages
+COPY ./*.sh /opt/scripts/
+RUN chmod +x /opt/scripts/*.sh
 
-ARG USER=coder
-RUN set -x \
-	&& useradd --groups wheel --no-create-home --shell /bin/bash ${USER} \
-	&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} \
-	&& chmod 0440 /etc/sudoers.d/${USER}
+RUN /opt/scripts/01-install-os-packages.sh
+RUN /opt/scripts/02-install-other-packages.sh
 
-USER ${USER}
-WORKDIR /home/${USER}
+RUN rm -rf /var/cache /var/log/dnf* /var/log/yum.*
