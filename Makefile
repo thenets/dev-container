@@ -1,13 +1,6 @@
 RELEASE_IMAGE_TAG ?= quay.io/thenets/dev-container:latest
 
-# ----------------- Build -----------------
-
-## Build the container image (dev)
-build:
-	docker build -t $(RELEASE_IMAGE_TAG) \
-		-f ./src/Containerfile \
-		$(ADDITIONAL_BUILD_ARGS) \
-		./src/
+# ----------------- Release -----------------
 
 ## Build release container image (squash the layers)
 release-build:
@@ -36,7 +29,10 @@ test:
 	make test-rootful_docker-in-rootful_docker-using_socket
 	make test-rootful_podman-in-rootful_docker
 
-_test-build: release-build
+_test-build:
+	docker build -t $(RELEASE_IMAGE_TAG) \
+		-f ./src/Containerfile \
+		./src/
 	docker build -t $(TEST_ROOTLESS_IMAGE) \
 		-f ./tests/rootless.containerfile \
 		./tests/
