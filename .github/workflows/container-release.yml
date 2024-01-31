@@ -13,7 +13,6 @@ jobs:
   Container-Build-and-Push:
     runs-on: ubuntu-latest
     env:
-      QUAY_REPO: quay.io/thenets/dev-container
       ADDITIONAL_BUILD_ARGS: --squash
 
     steps:

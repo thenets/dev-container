@@ -39,28 +39,28 @@ _test-build: release-build
 		./tests/
 
 test-rootful_podman-in-rootful_docker: _test-build
-	docker run -it --rm \
+	docker run --rm \
 		--privileged \
 		$(RELEASE_IMAGE_TAG) \
-		podman run -it --rm docker.io/busybox uname -a
+		podman run --rm docker.io/busybox uname -a
 
 test-rootful_docker-in-rootful_docker-using_socket: _test-build
-	docker run -it --rm \
+	docker run --rm \
 		--privileged \
 		-v /var/run/docker.sock:/var/run/docker.sock:rw \
 		$(RELEASE_IMAGE_TAG) \
-		docker run -it --rm docker.io/busybox uname -a
+		docker run --rm docker.io/busybox uname -a
 
 # WIP rootless
 test-rootless_podman-in-rootful_docker: _test-build
 # - Easier scenario
-	docker run -it --rm \
+	docker run --rm \
 		--privileged \
 		$(TEST_ROOTLESS_IMAGE) \
 			podman run --detach --name=podmanctr --net=host --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /var/lib/mycontainer:/var/lib/containers:Z --privileged docker.io/busybox sh -c 'while true ;do sleep 100000 ; done'
 
 # - Hard scenario, using defaults
-	docker run -it --rm \
+	docker run --rm \
 		--privileged \
 		$(TEST_ROOTLESS_IMAGE) \
-		podman run -it --rm docker.io/busybox uname -a
+		podman run --rm docker.io/busybox uname -a
