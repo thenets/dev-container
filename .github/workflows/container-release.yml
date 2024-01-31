@@ -12,8 +12,6 @@ on:
 jobs:
   Container-Build-and-Push:
     runs-on: ubuntu-latest
-    env:
-      ADDITIONAL_BUILD_ARGS: --squash
 
     steps:
       - run: echo "🎉 The job was automatically triggered by a '${{ github.event_name }}' event."
@@ -30,7 +28,7 @@ jobs:
       - name: "🖥️ Container build"
         run: |
           set -x
-          export RELEASE_IMAGE_TAG=$QUAY_REPO:latest
+          export RELEASE_IMAGE_TAG=${{ vars.QUAY_REPO }}:latest
           make release-build
 
       - name: "📦 Container push"
@@ -38,11 +36,11 @@ jobs:
           set -x
 
           # Latest tag
-          export RELEASE_IMAGE_TAG=$QUAY_REPO:latest
+          export RELEASE_IMAGE_TAG=${{ vars.QUAY_REPO }}:latest
           make release-push
 
           # Branch tag
           export BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3)
-          podman tag $QUAY_REPO:latest $QUAY_REPO:$BRANCH
-          export RELEASE_IMAGE_TAG=$QUAY_REPO:$BRANCH
+          podman tag ${{ vars.QUAY_REPO }}:latest ${{ vars.QUAY_REPO }}:$BRANCH
+          export RELEASE_IMAGE_TAG=${{ vars.QUAY_REPO }}:$BRANCH
           make release-push
