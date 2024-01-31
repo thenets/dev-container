@@ -2,9 +2,6 @@
 
 set -ex
 
-# Docker
-curl -sSL get.docker.io | sh
-
 # Python packages
 pip install \
     ansible-navigator \

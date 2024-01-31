@@ -1,5 +1,5 @@
 FROM quay.io/thenets/dev-container:latest
 
-RUN /opt/scripts/03-podman-setup-rootless.sh dednets
+RUN /opt/dev/03-podman-setup-rootless.sh dednets
 
 USER dednets

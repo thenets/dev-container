@@ -17,7 +17,7 @@ dnf install -y \
     sudo make git htop procps-ng net-tools iputils \
     iproute bind9-next-utils hostname \
     python3-pip golang rust cargo \
-    podman ansible \
+    ansible \
     terraform \
     curl wget \
     vim nano

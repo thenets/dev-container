@@ -2,13 +2,15 @@
 
 # Podman Setup Rootless
 #
+# **WARNING**: maybe in the future it will also support rootless Docker
+#
 # This script creates a new user and sets up rootless podman for the user.
 #
 # This is required for running podman as a non-root user inside a container,
 # also known as PINP (Podman in Podman) or PIND (Podman in Docker).
 # Learn more at https://www.redhat.com/sysadmin/podman-inside-container
 #
-# Usage: ./03-podman-setup-rootless.sh _USERNAME
+# Usage: ./03-rootless-container.sh _USERNAME
 
 
 # Helpers
@@ -97,9 +99,8 @@ set -x
 # Don't include container-selinux and remove
 # directories used by yum that are just taking
 # up space.
-dnf -y update
-dnf -y reinstall shadow-utils
-dnf -y install podman fuse-overlayfs --exclude container-selinux
+dnf reinstall -y shadow-utils
+dnf install -y podman fuse-overlayfs --exclude container-selinux
 
 # Create user
 useradd ${_USERNAME}; \
