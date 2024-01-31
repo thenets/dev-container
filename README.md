@@ -7,8 +7,8 @@ A full-featured Fedora container image designed for development.
 ---
 
 Container images:
-- [Quay.io](https://quay.io/repository/thenets/rinetd)
-  - `quay.io/thenets/rinetd:latest`
+- [Quay.io](https://quay.io/repository/thenets/dev-container)
+  - `quay.io/thenets/dev-container:latest`
 
 ## 1. Use-cases
 
@@ -32,32 +32,29 @@ Just run the container as usual.
 
 ```bash
 # Example: Run htop
-podman run -it --rm quay.io/thenets/rinetd:latest htop
+podman run -it --rm quay.io/thenets/dev-container:latest htop
 ```
 
 ### 3.2. Rootfull Podman in Rootfull Docker, with `--privileged` flag
 
 ```bash
-# Start the container in privileged mode
+# Start a Docker container in privileged mode
+docker run -it --rm --privileged quay.io/thenets/dev-container:latest
 
-
+# (inside the container)
+# Run a podman container
+podman run -it --rm docker.io/alpine echo 'hello'
 ```
 
 ### 3.3. Rootfull Docker in Rootfull Docker, with socket sharing
 
-```dockerfile
-FROM quay.io/thenets/dev-container:latest
-
-# Create a new user using the `04-rootless-container.sh` script
-# Example: Create a new user called `dednets`
-RUN /opt/dev/04-rootless-container.sh dednets
-
-# Switch to the new user
-USER dednets
-```
-
 ```bash
+# Start a Docker container, mapping it's daemon socket
+docker run -ti --rm -v /var/run/docker.sock:/var/run/docker.sock:rw quay.io/thenets/dev-container:latest
 
+# (inside the container)
+# Run a docker container
+docker run -it --rm docker.io/alpine echo 'hello'
 ```
 
 ## 4. References
