@@ -9,12 +9,12 @@ on:
 jobs:
   Container-Build-and-Push:
     runs-on: ubuntu-latest
+    env:
+      QUAY_REPO: quay.io/thenets/dev-container
+
     steps:
       - run: echo "🎉 The job was automatically triggered by a '${{ github.event_name }}' event."
       - run: echo "🐧 This job is now running on a '${{ runner.os }}' server."
-
-      - name: "📦 Set Quay repo"
-        run: echo "QUAY_REPO=quay.io/thenets/dev-container" >> $GITHUB_ENV
 
       - name: "🚚 Check out repository code: ${{ github.ref }} ${{ github.repository }}"
         uses: actions/checkout@v4
@@ -23,6 +23,11 @@ jobs:
         run: |
           set +x
           podman login -u ${{ secrets.QUAY_USERNAME }} -p ${{ secrets.QUAY_PASSWORD }} quay.io
+
+      - name: "🧪 Smoke tests"
+        run: |
+          set -x
+          make test
 
       - name: "🖥️ Container build"
         run: |

@@ -2,11 +2,16 @@ RELEASE_IMAGE_TAG ?= quay.io/thenets/dev-container:latest
 
 # ----------------- Build -----------------
 
-## Build release container image
-release-build:
+## Build the container image (dev)
+build:
 	docker build -t $(RELEASE_IMAGE_TAG) \
 		-f ./src/Containerfile \
+		$(ADDITIONAL_BUILD_ARGS) \
 		./src/
+
+## Build release container image (squash the layers)
+release-build:
+	make build ADDITIONAL_BUILD_ARGS="--squash" --no-print-directory
 
 ## Shell into the RELEASE container
 release-shell:
@@ -25,7 +30,7 @@ TEST_ROOTLESS_IMAGE ?= thenets/dev-container:rootless
 ## Run all tests
 test:
 # - I added them in multiple lines to make the target more readable
-	make test-rootless_podman-in-rootful_docker
+	make test-rootful_docker-in-rootful_docker-using_socket
 	make test-rootful_podman-in-rootful_docker
 
 _test-build: release-build
@@ -33,14 +38,29 @@ _test-build: release-build
 		-f ./tests/rootless.containerfile \
 		./tests/
 
-test-rootless_podman-in-rootful_docker: _test-build
-	docker run -it --rm \
-		--privileged \
-		$(TEST_ROOTLESS_IMAGE) \
-		podman run -it --rm docker.io/busybox uname -a
-
 test-rootful_podman-in-rootful_docker: _test-build
 	docker run -it --rm \
 		--privileged \
 		$(RELEASE_IMAGE_TAG) \
+		podman run -it --rm docker.io/busybox uname -a
+
+test-rootful_docker-in-rootful_docker-using_socket: _test-build
+	docker run -it --rm \
+		--privileged \
+		-v /var/run/docker.sock:/var/run/docker.sock:rw \
+		$(RELEASE_IMAGE_TAG) \
+		docker run -it --rm docker.io/busybox uname -a
+
+# WIP rootless
+test-rootless_podman-in-rootful_docker: _test-build
+# - Easier scenario
+	docker run -it --rm \
+		--privileged \
+		$(TEST_ROOTLESS_IMAGE) \
+			podman run --detach --name=podmanctr --net=host --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v /var/lib/mycontainer:/var/lib/containers:Z --privileged docker.io/busybox sh -c 'while true ;do sleep 100000 ; done'
+
+# - Hard scenario, using defaults
+	docker run -it --rm \
+		--privileged \
+		$(TEST_ROOTLESS_IMAGE) \
 		podman run -it --rm docker.io/busybox uname -a
