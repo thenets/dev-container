@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Rootfull container support for Podman and Docker
+# Rootful container support for Podman and Docker
 
 set -ex
 

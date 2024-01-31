@@ -20,9 +20,9 @@ Container images:
 - Most build tools. Maybe suitable for pipelines too.
 - Container-in-container supported scenarios:
     - [ ] Rootless Podman in Rootless Podman
-    - [x] Rootfull Podman in Rootfull Docker, with `--privileged` flag
-    - [ ] Rootfull Docker in Rootfull Docker, with `--privileged` flag
-    - [x] Rootfull Docker in Rootfull Docker, with socket sharing
+    - [x] Rootful Podman in Rootful Docker, with `--privileged` flag
+    - [ ] Rootful Docker in Rootful Docker, with `--privileged` flag
+    - [x] Rootful Docker in Rootful Docker, with socket sharing
 
 ## 3. Usage per scenario
 
@@ -35,7 +35,7 @@ Just run the container as usual.
 podman run -it --rm quay.io/thenets/dev-container:latest htop
 ```
 
-### 3.2. Rootfull Podman in Rootfull Docker, with `--privileged` flag
+### 3.2. Rootful Podman in rootful Docker, with `--privileged` flag
 
 ```bash
 # Start a Docker container in privileged mode
@@ -46,7 +46,7 @@ docker run -it --rm --privileged quay.io/thenets/dev-container:latest
 podman run -it --rm docker.io/alpine echo 'hello'
 ```
 
-### 3.3. Rootfull Docker in Rootfull Docker, with socket sharing
+### 3.3. Rootful Docker in rootful Docker, with socket sharing
 
 ```bash
 # Start a Docker container, mapping it's daemon socket
