@@ -11,18 +11,21 @@ build:
 
 ## Build release container image (squash the layers)
 release-build:
-	make build ADDITIONAL_BUILD_ARGS="--squash" --no-print-directory
+	podman build -t $(RELEASE_IMAGE_TAG) \
+		-f ./src/Containerfile \
+		--squash \
+		./src/
 
-## Shell into the RELEASE container
+## Shell into the release container
 release-shell:
-	docker run -it --rm \
+	podman run -it --rm \
 		--privileged \
 		$(RELEASE_IMAGE_TAG) \
 		bash
 
-## Push the RELEASE container image to the registry
+## Push the release container image to the registry
 release-push:
-	docker push $(RELEASE_IMAGE_TAG)
+	podman push $(RELEASE_IMAGE_TAG)
 
 # ----------------- Test -----------------
 TEST_ROOTLESS_IMAGE ?= thenets/dev-container:rootless
