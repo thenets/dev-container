@@ -1,0 +1,11 @@
+FROM registry.fedoraproject.org/fedora:latest
+
+# Install OS packages
+COPY ./*.sh /opt/dev/
+RUN chmod +x /opt/dev/*.sh
+
+RUN /opt/dev/01-install-os-packages.sh
+RUN /opt/dev/02-install-other-packages.sh
+RUN /opt/dev/03-rootfull-container.sh
+
+RUN rm -rf /var/cache /var/log/dnf* /var/log/yum.*
