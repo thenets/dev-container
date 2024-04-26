@@ -8,6 +8,7 @@ dnf upgrade -y
 # Repos
 dnf install -y dnf-plugins-core
 dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
 
 # Groups
 dnf groupinstall -y "Development Tools" "Development Libraries"
@@ -18,6 +19,6 @@ dnf install -y \
     iproute bind9-next-utils hostname \
     python3-pip golang rust cargo \
     ansible \
-    terraform \
+    terraform gh \
     curl wget \
     vim nano
